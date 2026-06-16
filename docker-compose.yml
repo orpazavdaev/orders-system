@@ -15,6 +15,24 @@ services:
       timeout: 5s
       retries: 5
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: orders
+      RABBITMQ_DEFAULT_PASS: orders
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build: ./backend
     ports:
@@ -27,12 +45,19 @@ services:
       POSTGRES_USER: orders
       POSTGRES_PASSWORD: orders
       POSTGRES_DB: orders
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: orders
+      RABBITMQ_PASSWORD: orders
+      RABBITMQ_VHOST: /
     volumes:
       - ./backend:/app
       - /app/node_modules
     command: sh -c "npm run migrate && npm run dev"
     depends_on:
       postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
   frontend:
@@ -52,3 +77,4 @@ services:
 
 volumes:
   postgres_data:
+  rabbitmq_data:
