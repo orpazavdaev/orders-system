@@ -2,13 +2,12 @@ import cors from "cors";
 import express, { type Express, type NextFunction, type Request, type Response } from "express";
 import { OrderController } from "./controllers/orderController";
 import { createOrderRoutes } from "./routes/orderRoutes";
-import { InMemoryOrderRepository } from "./repositories/inMemoryOrderRepository";
+import type { OrderRepository } from "./repositories/orderRepository";
 import { OrderService } from "./services/orderService";
 
-export function createApp(): Express {
+export function createApp(orderRepository: OrderRepository): Express {
   const app = express();
 
-  const orderRepository = new InMemoryOrderRepository();
   const orderService = new OrderService(orderRepository);
   const orderController = new OrderController(orderService);
 

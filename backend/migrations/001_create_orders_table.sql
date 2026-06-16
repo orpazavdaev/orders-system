@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS orders (
+  id UUID PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
