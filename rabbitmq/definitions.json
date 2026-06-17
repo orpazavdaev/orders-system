@@ -4,6 +4,23 @@
       "name": "/"
     }
   ],
+  "users": [
+    {
+      "name": "orders",
+      "password_hash": "Qhf7xC4EGX0S6iWn7r1/5yj002K6Gp6OBcCxU2a6JIbtvk5Y",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "orders",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
   "exchanges": [
     {
       "name": "orders.exchange",
